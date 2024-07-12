@@ -1,0 +1,25 @@
+Ejercicio6:
+Se define una función llamada count_words_in_file que toma la ruta de un archivo (file_path) como argumento.
+Dentro de la función, se abre el archivo especificado en modo de lectura utilizando open(file_path, 'r') y se lee su contenido en la variable text utilizando file.read().
+Luego, se cuenta el número de palabras en el texto utilizando len(text.split()). El método split() divide el texto en palabras utilizando espacios en blanco como separadores y len() devuelve la cantidad de elementos resultantes.
+La función devuelve una tupla que contiene la ruta del archivo (file_path) y el conteo de palabras (word_count).
+Se define una función llamada parallel_word_count que toma una lista de rutas de archivos (file_paths) como argumento.
+Se crea un diccionario vacío llamado results para almacenar los resultados del conteo de palabras.
+Se utiliza concurrent.futures.ThreadPoolExecutor() como administrador de contexto para crear un grupo de subprocesos (threads) que ejecutarán las tareas en paralelo.
+Se crea un diccionario llamado future_to_file que asigna cada tarea (executor.submit(count_words_in_file, file_path)) a la ruta del archivo correspondiente (file_path). Esto permite rastrear qué tarea corresponde a qué archivo.
+Se itera sobre las tareas completadas utilizando concurrent.futures.as_completed(future_to_file), que devuelve las tareas a medida que se completan.
+Para cada tarea completada (future), se obtiene la ruta del archivo correspondiente utilizando future_to_file[future].
+Se utiliza un bloque try-except para manejar posibles excepciones durante la ejecución de las tareas. Si una tarea se completa sin errores, se obtiene el resultado (la tupla con la ruta del archivo y el conteo de palabras) utilizando future.result() y se almacena en el diccionario results con la ruta del archivo como clave y el conteo de palabras como valor. Si ocurre una excepción, se imprime un mensaje de error junto con la ruta del archivo y la excepción.
+Finalmente, la función devuelve el diccionario results que contiene las rutas de los archivos y sus respectivos conteos de palabras.
+Ejercicio7:
+Se define una función asincrónica llamada fetch_page que toma una sesión de aiohttp (session) y una URL (url) como argumentos.
+Dentro de la función, se utiliza async with session.get(url) para realizar una solicitud GET asincrónica a la URL especificada utilizando la sesión proporcionada.
+Se obtiene el contenido de la respuesta utilizando await response.text() y se almacena en la variable content.
+Se genera un nombre de archivo único basado en la URL, reemplazando "https://" y "/" por guiones bajos y agregando la extensión ".html".
+Se abre un archivo con el nombre generado en modo de escritura utilizando open(filename, 'w') y se escribe el contenido de la página web en el archivo.
+Finalmente, la función devuelve el nombre del archivo generado.
+Se define una función asincrónica llamada parallel_download que toma una lista de URLs (urls) como argumento.
+Dentro de la función, se crea una sesión de aiohttp utilizando aiohttp.ClientSession() como administrador de contexto.
+Se crea una lista de tareas (tasks) utilizando una comprensión de lista. Cada tarea es una llamada a la función fetch_page con la sesión y la URL correspondiente.
+Se utiliza asyncio.gather(*tasks) para ejecutar todas las tareas de forma concurrente y esperar a que se completen. El operador * se utiliza para desempaquetar la lista de tareas como argumentos individuales para gather().
+La función devuelve el resultado de asyncio.gather(), que es una lista con los nombres de archivo generados por cada tarea.
